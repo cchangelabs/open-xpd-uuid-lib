@@ -15,7 +15,10 @@ def sanitize(guid: str) -> str:
     :param guid: guid with either dashes or lowercase letters or ambiguous letters
     :return: sanitized guid
     """
-    pass
+    if not guid:
+        return ''
+    guid = guid.replace('-', '').upper().replace('I', '1').replace('L', '1').replace('O', '0')
+    return guid
 
 
 def validate(guid: str) -> bool:
