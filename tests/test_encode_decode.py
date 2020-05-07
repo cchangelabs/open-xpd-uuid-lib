@@ -1,6 +1,6 @@
 import pytest
 
-from open_xpd_uuid import encode, decode
+from cqd.open_xpd_uuid import encode, decode
 
 
 @pytest.mark.parametrize('number', (29, 1099511627775))

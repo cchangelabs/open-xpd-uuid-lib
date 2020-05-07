@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-from open_xpd_uuid import generate
+from cqd.open_xpd_uuid import generate
 
 
 @pytest.mark.parametrize(
