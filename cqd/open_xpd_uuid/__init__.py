@@ -7,6 +7,11 @@ CODE_LENGTH = 8
 TOTAL_COMBINATIONS = (DICTIONARY_SIZE - 1) * DICTIONARY_SIZE ** (CODE_LENGTH - 1)
 
 
+class GuidValidationError(Exception):
+    """An error happened while validating short readable GUID"""
+    pass
+
+
 def encode(number: int) -> str:
     """
     Turns `number` into short readable GUID using encoding table.
@@ -41,7 +46,7 @@ def generate() -> str:
     number = random.randint(0, TOTAL_COMBINATIONS)
     result = encode(number)
 
-    return result.rjust(CODE_LENGTH, '0')
+    return result.rjust(CODE_LENGTH, '0')  # TODO: append checksum
 
 
 def sanitize(guid: str) -> str:
@@ -57,11 +62,24 @@ def sanitize(guid: str) -> str:
     return guid
 
 
-def validate(guid: str) -> bool:
+def validate(guid: str):
     """
     Validates whether passed `guid` is short readable GUID  for product declaration.
     :param guid: guid to validate. Must be sanitized. See `def sanitize()`.
-    :return: True if passed `guid` is valid, False otherwise
+
+    :raise ValueError: if `guid` is not passed.
+    :raise GuidValidationError: if passed `guid` is not valid short readable GUID.
     """
-    # TODO: not implemented yet
-    pass
+    if not guid:
+        raise ValueError('`guid` argument must be passed')
+
+    if len(guid) != CODE_LENGTH:
+        raise GuidValidationError(f'`guid` length must be {CODE_LENGTH} characters long')
+    invalid_chars = set()
+    for char in guid:
+        if char not in DICTIONARY:
+            invalid_chars.add(char)
+    if invalid_chars:
+        raise GuidValidationError(f'`{"".join(invalid_chars)}` characters are not allowed to be used in `guid`')
+
+    # TODO: validate checksum
