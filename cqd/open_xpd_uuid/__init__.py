@@ -1,10 +1,10 @@
 import random
 
-ENCODING_TABLE = '0123456789ABCDEFGHJKMNPQRSTUWXYZ'
-ENCODING_TABLE_LENGTH = len(ENCODING_TABLE)
+DICTIONARY = '0123456789ABCDEFGHJKMNPQRSTUWXYZ'
+DICTIONARY_SIZE = len(DICTIONARY)
 CODE_LENGTH = 8
 # first `Z` is reserved for future
-TOTAL_COMBINATIONS = (ENCODING_TABLE_LENGTH - 1) + ENCODING_TABLE_LENGTH ** CODE_LENGTH
+TOTAL_COMBINATIONS = (DICTIONARY_SIZE - 1) * DICTIONARY_SIZE ** (CODE_LENGTH - 1)
 
 
 def encode(number: int) -> str:
@@ -13,12 +13,9 @@ def encode(number: int) -> str:
     :param number: numeric id 
     :return: guid
     """
-    if number < ENCODING_TABLE_LENGTH:
-        n = ENCODING_TABLE[number]
-        return n
-    n1 = encode(number // ENCODING_TABLE_LENGTH)
-    n2 = encode(number % ENCODING_TABLE_LENGTH)
-    return n1 + n2
+    if number < DICTIONARY_SIZE:
+        return DICTIONARY[number]
+    return encode(number // DICTIONARY_SIZE) + encode(number % DICTIONARY_SIZE)
 
 
 def decode(guid: str) -> str:
@@ -29,7 +26,7 @@ def decode(guid: str) -> str:
     """
     x = 0
     for char in guid:
-        x = x * ENCODING_TABLE_LENGTH + ENCODING_TABLE.index(char)
+        x = x * DICTIONARY_SIZE + DICTIONARY.index(char)
     return x
 
 
