@@ -3,10 +3,12 @@ A library of common functions used when creating and managing open-xpd-uuid,
 a common, globally-unique name space (uuid) for Product Declarations, including HPDs and EPDs, 
 to help users find all environmental and health information related to a single product.
 # Open xPD UUID (short readable GUIDs)
-`open-xpd-uuid` is a string that consists of 8 alpha-numeric characters and any number of dashes. 
-For example: `123ABCED`, `ASB21M01`, `avbDK93S`, `-AB-11-cc-Ll---`.
+`open-xpd-uuid` is a string that consists of 8 or 10 (8+2) alpha-numeric characters and any number of dashes. 
+For example: `123ABCED`, `123ABCEDAR`, `ASB21M01`, `avbDK93S`, `-AB-11-cc-Ll---`.
 GUIDs that consists of the following characters `1234567890ABCDEFGHJKMNPRQRSTUVWXYZ` (`L` and `O` are not mentioned) 
-are called "canonical". For example: `12345678`, `ABCDEFG1`.
+are called "canonical". For example: `12345678`, `ABCDEFG1`, `123ABCEDAR`.
+GUIDs that consists of 10 characters represent 8-character guid with appended 2-character checksum.
+Checksum allows to detect 1-character entry errors and character swaps, and most other errors.
 ## Character treatment
 * `-` or dash - is ignored
 * `L` or `l` or `I` or `i` - is treated as `1`
@@ -52,4 +54,17 @@ Use `validate` to validate short readable GUID and get error description if the 
 ...     print(e)
 ...     
 `guid` length must be 8 characters long
+```
+
+## Generate and use checksum
+```pycon
+>>> from cqd import open_xpd_uuid
+>>> guid = open_xpd_uuid.generate()
+'JKGEE5PN'
+>>> checksum = open_xpd_uuid.checksum(guid)
+'ME'
+>>> guid_with_checksum = guid + checksum
+'JKGEE5PNME'
+>>> short_link = 'cqd.io/e/' + guid_with_checksum
+'cqd.io/e/JKGEE5PNME'
 ```

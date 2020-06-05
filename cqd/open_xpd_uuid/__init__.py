@@ -6,6 +6,8 @@ CODE_LENGTH = 8
 # first `Z` is reserved for future
 TOTAL_COMBINATIONS = (DICTIONARY_SIZE - 1) * DICTIONARY_SIZE ** (CODE_LENGTH - 1)
 
+CHECKSUM_LENGTH = 2
+
 
 class GuidValidationError(Exception):
     """An error happened while validating short readable GUID"""
@@ -23,7 +25,7 @@ def encode(number: int) -> str:
     return encode(number // DICTIONARY_SIZE) + encode(number % DICTIONARY_SIZE)
 
 
-def decode(guid: str) -> str:
+def decode(guid: str) -> int:
     """
     Turns `guid` into number based on encoding table. Collisions are possible.
     :param guid: short readable GUID. Must be validated.
@@ -47,6 +49,26 @@ def generate() -> str:
     result = encode(number)
 
     return result.rjust(CODE_LENGTH, '0')  # TODO: append checksum
+
+
+def checksum(guid: str) -> str:
+    """
+    Generates checksum for passed "canonical" `guid`.
+    Checksum is a sequence of two UPPER-case alphanumeric characters that are also allowed `guid` characters.
+    For example: "JR", "CK", "00", "1F".
+
+    `checksum('1U7XPGQ2') == '3X'`
+
+    :return: two-letter checksum
+    """
+    result = 403
+    for i in range(1, CODE_LENGTH // CHECKSUM_LENGTH + 1):
+        stop = i * CHECKSUM_LENGTH
+        start = stop - CHECKSUM_LENGTH
+
+        result += decode(guid[start:stop])
+
+    return encode(result % 1024)
 
 
 def sanitize(guid: str) -> str:
@@ -73,7 +95,8 @@ def validate(guid: str):
     if not guid:
         raise ValueError('`guid` argument must be passed')
 
-    if len(guid) != CODE_LENGTH:
+    code_length_with_checksum = CODE_LENGTH + CHECKSUM_LENGTH
+    if len(guid) not in {CODE_LENGTH, code_length_with_checksum}:
         raise GuidValidationError(f'`guid` length must be {CODE_LENGTH} characters long')
     invalid_chars = set()
     for char in guid:
@@ -82,4 +105,6 @@ def validate(guid: str):
     if invalid_chars:
         raise GuidValidationError(f'`{"".join(invalid_chars)}` characters are not allowed to be used in `guid`')
 
-    # TODO: validate checksum
+    if len(guid) == code_length_with_checksum:
+        if checksum(guid[:CODE_LENGTH]) != guid[CODE_LENGTH:]:
+            raise GuidValidationError("Checksum doesn't match")
