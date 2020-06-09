@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='open-xpd-uuid',
-    version='0.0.1',
+    version='0.1.0',
     description='A library of common functions used when creating and managing open-xpd-uuid, '
                 'a common, globally-unique name space (uuid) for Product Declarations, including HPDs and EPDs, '
                 'to help users find all environmental and health information related to a single product.',
@@ -16,7 +16,7 @@ setup(
     url='https://github.com/cchangelabs/open-xpd-uuid-lib',
     packages=find_packages(),
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
