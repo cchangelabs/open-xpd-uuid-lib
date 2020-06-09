@@ -18,6 +18,12 @@
 alternatives:
 * `pipenv run pytest`
 
+## Prepare release
+1. Change version in `CHANGELOG.md`
+1. Change version in `setup.py`
+1. Commit modified files with the following message: `bump version: <major.minor.revision>`. 
+For example `bump version: 0.1.0`.
+
 ## Packaging
 1. `python3 setup.py sdist bdist_wheel`
 
