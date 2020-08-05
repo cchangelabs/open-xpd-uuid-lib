@@ -1,6 +1,9 @@
 # Release History
 
 ## Not released
+* TBD
+
+## 0.2.0
 * Extend `generate` function with `prefix` argument;
 
 ## 0.1.0
