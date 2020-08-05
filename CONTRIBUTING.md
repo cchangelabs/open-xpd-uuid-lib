@@ -6,12 +6,12 @@
 1. Install [pipenv](https://pypi.org/project/pipenv/);
 
 1. Clone or download repository: `git clone git@github.com:cchangelabs/open-xpd-uuid-lib.git`;
-1. Got to project folder: `cd open-xpd-uuid-lib`;
+1. Go to project folder: `cd open-xpd-uuid-lib`;
 1. Install dependencies: `pipenv install --dev`;
 1. `pipenv shell`.
 
 ## Run Tests
-1. Got to project folder: `cd open-xpd-uuid-lib`;
+1. Go to project folder: `cd open-xpd-uuid-lib`;
 1. `pipenv shell`;
 1. `pytest` or `tox`.
 
