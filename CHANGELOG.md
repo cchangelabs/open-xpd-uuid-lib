@@ -1,7 +1,7 @@
 # Release History
 
 ## Not released
-* TBD
+* Extend `generate` function with `prefix` argument;
 
 ## 0.1.0
 * Implement `checksum` function;

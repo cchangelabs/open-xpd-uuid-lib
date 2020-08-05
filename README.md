@@ -27,6 +27,12 @@ The library supports `python 3.6` and higher.
 >>> open_xpd_uuid.generate()
 'JKGEE5PN'
 ```
+## Generate short readable GUID starting with specific characters set (prefix)
+```pycon
+>>> from cqd import open_xpd_uuid
+>>> open_xpd_uuid.generate('CQD')
+'CQD55PG0'
+```
 ## Sanitize short readable GUIDs
 Use `sanitize` to replace ambiguous chars(_0,o,O,1,L,l,I,i_) with correct ones and remove dashes(_-_).
 This function is useful to turn guid received from a user into a canonical one.

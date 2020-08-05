@@ -37,18 +37,28 @@ def decode(guid: str) -> int:
     return x
 
 
-def generate() -> str:
+def generate(prefix: str = None) -> str:
     """
     Generates short readable GUID.
 
     It doesn't generate guids starting with 'Z_______'.
 
+    :param prefix: prefix in canonical form.
+                It forces this function to generate guids that start with the `prefix`. Cannot start with 'Z'.
     :return: guid
     """
-    number = random.randint(0, TOTAL_COMBINATIONS)
+    randint_from = 0
+    randint_to = TOTAL_COMBINATIONS
+    if prefix:
+        if prefix.startswith('Z'):
+            raise ValueError("`prefix` must not start with 'Z'")
+        randint_from = decode(prefix.ljust(CODE_LENGTH, '0'))
+        randint_to = decode(prefix.ljust(CODE_LENGTH, DICTIONARY[-1]))
+
+    number = random.randint(randint_from, randint_to)
     result = encode(number)
 
-    return result.rjust(CODE_LENGTH, '0')  # TODO: append checksum
+    return result.rjust(CODE_LENGTH, '0')
 
 
 def checksum(guid: str) -> str:
@@ -59,6 +69,7 @@ def checksum(guid: str) -> str:
 
     `checksum('1U7XPGQ2') == '3X'`
 
+    :param guid: guid in canonical form
     :return: two-letter checksum
     """
     result = 403
