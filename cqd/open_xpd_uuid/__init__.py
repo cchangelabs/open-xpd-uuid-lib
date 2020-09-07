@@ -79,7 +79,7 @@ def checksum(guid: str) -> str:
 
         result += decode(guid[start:stop])
 
-    return encode(result % 1024)
+    return encode(result % 1024).rjust(CHECKSUM_LENGTH, '0')
 
 
 def sanitize(guid: str) -> str:

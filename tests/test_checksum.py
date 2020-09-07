@@ -9,6 +9,7 @@ from cqd.open_xpd_uuid import checksum
             ('10000000', 'DK'),
             ('ZZZZZZZZ', 'CF'),
             ('12345678', 'X7'),
+            ('EC3949XK', '04'),
     ))
 def test_checksum(guid: str, expected_checksum: str):
     assert checksum(guid) == expected_checksum

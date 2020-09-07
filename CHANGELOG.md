@@ -1,7 +1,7 @@
 # Release History
 
 ## Not released
-* TBD
+* Justify single-char checksums to two-char ones
 
 ## 0.2.0
 * Extend `generate` function with `prefix` argument;
