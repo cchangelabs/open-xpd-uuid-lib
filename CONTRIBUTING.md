@@ -26,7 +26,7 @@ alternatives:
 For example `bump version: 0.1.0`.
 1. Tag the commit `git tag 0.1.0`
 1. Push changes and tags `git push origin --tags`
-1. Merge into `development` branch into `master`
+1. Merge `development` branch into `master`
 
 ## Packaging
 1. `python3 setup.py sdist bdist_wheel`
