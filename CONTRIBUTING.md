@@ -1,10 +1,14 @@
 # Contribution Guide
 
 ## Development Environment
-1. Install [python3.6](https://www.python.org/downloads/) for your operating system;
-1. OPTIONAL: you can install more python versions e.g. 3.7 and 3.8 to use `tox`;
+1. Install [pyenv](https://github.com/pyenv/pyenv?tab=readme-ov-file#installation).
+    This is needed to manage multiple python versions;
+2. Install `python3.9` via `pyenv`:
+    ```bash
+    pyenv install 3.9
+    ```
+   If `3.9` in pyenv is not available, then `pyenv update` and try again;
 1. Install [pipenv](https://pypi.org/project/pipenv/);
-
 1. Clone or download repository: `git clone git@github.com:cchangelabs/open-xpd-uuid-lib.git`;
 1. Make sure you are in `development` branch;
 1. Go to project folder: `cd open-xpd-uuid-lib`;
@@ -14,10 +18,25 @@
 ## Run Tests
 1. Go to project folder: `cd open-xpd-uuid-lib`;
 1. `pipenv shell`;
-1. `pytest` or `tox`.
+1. `pytest`.
 
 alternatives:
 * `pipenv run pytest`
+
+### Tox
+1. Install [`tox`](https://tox.wiki/en/4.26.0/installation.html):
+    ```bash
+    pipx install tox
+    ```
+2. Make python versions available for `tox`:
+    ```bash
+    pyenv install 3.9 3.10 3.11 3.12 3.13
+    pyenv local 3.9 3.10 3.11 3.12 3.13
+    ```
+3. Run `tox`:
+    ```bash
+    tox
+    ```
 
 ## Prepare release
 1. Change version in `CHANGELOG.md`
