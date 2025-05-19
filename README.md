@@ -18,7 +18,7 @@ Checksum allows to detect 1-character entry errors and character swaps, and most
 `pip install open-xpd-uuid-lib`
 
 # Supported versions
-The library supports `python 3.6` and higher.
+The library supports `python 3.9` and higher.
 
 # Usage
 ## Generate short readable GUID
