@@ -39,17 +39,28 @@ def decode(guid: str) -> int:
 
 
 def generate(prefix: str | None = None) -> str:
-    """Generate short readable GUID.
+    """Generate a short readable GUID.
 
-    It doesn't generate guids starting with 'Z_______'.
+    The GUID is an 8-character alphanumeric string derived from a random number.
+    Optionally, a prefix can be provided to constrain the GUID to start with the sanitized prefix.
 
-    :param prefix: prefix in canonical form.
-                It forces this function to generate guids that start with the `prefix`. Cannot start with 'Z'.
-    :return: guid
+    Example:
+        ``generate()`` returns ``'1U7XPGQ2'``.
+        ``generate('CQD')`` returns ``'CQD12345'``.
+
+    :param prefix: A string to constrain the GUID to start with the sanitized prefix.
+                   The prefix can be in any form (e.g., with dashes, lowercase, or ambiguous characters).
+                   Cannot start with ``'Z'``.
+    :return: A short readable GUID in canonical form.
+
+    :raises ValueError: If the ``prefix`` starts with ``'Z'``.
+    :raises GuidValidationError: If the ``prefix`` is not a valid short readable GUID.
     """
     randint_from = 0
     randint_to = TOTAL_COMBINATIONS
     if prefix:
+        prefix = sanitize(prefix)
+        validate(prefix.rjust(CODE_LENGTH, "0"))
         if prefix.startswith("Z"):
             msg = "`prefix` must not start with 'Z'"
             raise ValueError(msg)
