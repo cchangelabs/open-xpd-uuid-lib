@@ -63,16 +63,23 @@ def generate(prefix: str | None = None) -> str:
 
 
 def checksum(guid: str) -> str:
-    """Generate checksum for passed "canonical" `guid`.
+    """Generate a checksum for the given valid GUID.
 
-    Checksum is a sequence of two UPPER-case alphanumeric characters that are also allowed `guid` characters.
-    For example: "JR", "CK", "00", "1F".
+    The checksum is a sequence of two uppercase alphanumeric characters derived from the GUID.
+    It ensures the integrity of the GUID and can be used for validation purposes.
 
-    `checksum('1U7XPGQ2') == '3X'`
+    Example:
+        ``checksum('1U7XPGQ2')`` returns ``'3X'``.
 
-    :param guid: guid in canonical form
-    :return: two-letter checksum
+    :param guid: The GUID in any form (e.g., with dashes, lowercase, or ambiguous characters).
+
+    :return: A two-character checksum in canonical form.
+
+    :raises ValueError: If the ``guid`` is not provided.
+    :raises GuidValidationError: If the ``guid`` is not a valid short readable GUID.
     """
+    guid = sanitize(guid)
+    validate(guid)
     result = 403
     for i in range(1, CODE_LENGTH // CHECKSUM_LENGTH + 1):
         stop = i * CHECKSUM_LENGTH
