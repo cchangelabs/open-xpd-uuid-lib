@@ -46,6 +46,21 @@ def test_generate_with_prefix(monkeypatch: pytest.MonkeyPatch, numeric_id: int, 
     monkeypatch.setattr(random, "randint", mock_randint)
 
     assert generate("CQD") == short_code
+    assert generate("cqd") == short_code
+
+
+@pytest.mark.parametrize(
+    ("prefix", "starts_with"),
+    [
+        ("cqd", "CQD"),
+        ("c-q-d", "CQD"),
+        ("cqL", "CQ1"),
+        ("Coo--oo", "C0000"),
+    ],
+)
+def test_generate_with_prefix_any_format(prefix: str, starts_with: str) -> None:
+    """Test that `generate` produces the correct short code with a prefix in any format."""
+    assert generate(prefix).startswith(starts_with)
 
 
 def test_generate_with_z_prefix_is_not_allowed() -> None:
