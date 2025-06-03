@@ -11,6 +11,7 @@ from cqd.open_xpd_uuid import checksum
         ("ZZZZZZZZ", "CF"),
         ("12345678", "X7"),
         ("EC3949XK", "04"),
+        ("ec3949-xk", "04"),
     ],
 )
 def test_checksum(guid: str, expected_checksum: str) -> None:
