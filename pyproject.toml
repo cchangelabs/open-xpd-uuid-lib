@@ -35,6 +35,7 @@ pytest = "^8.3.5"
 ruff = "^0.11.11"
 mypy = "^1.15.0"
 pre-commit = "^4.2.0"
+commitizen = ">=4.8.2,<5.0.0"
 
 [tool.ruff]
 line-length = 120
@@ -62,6 +63,15 @@ convention = "pep257"
 [tool.mypy]
 python_version = "3.9"
 strict = true
+
+[tool.commitizen]
+version_provider = "pep621"
+bump_message = "chore: bump project version $current_version → $new_version"
+update_changelog_on_bump = true
+pre_bump_hooks = []
+version_files = [
+    "cqd/open_xpd_uuid/__version__.py",
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
