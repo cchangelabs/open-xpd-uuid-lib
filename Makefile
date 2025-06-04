@@ -206,6 +206,45 @@ build:
 	 $(POETRY) build; \
 	 echo "DONE: Building packages";
 
+# Update the CHANGELOG.md file with unreleased changes incrementally without bumping the project version.
+.PHONY: changelog
+changelog:
+	@( \
+		echo "Generating changelog"; \
+		set -e; \
+		$(call activate_venv) \
+		cz changelog --incremental; \
+		echo "DONE: Changelog"; \
+	)
+
+# Display unreleased changes in the console without updating the CHANGELOG.md file.
+.PHONY: print-changelog
+print-changelog:
+	@( \
+		 $(call activate_venv) \
+		 cz changelog --dry-run --incremental; \
+	)
+
+# Increment the project version across all relevant files, update the CHANGELOG.md,
+# create a commit for the version bump, and tag the commit with the new version.
+.PHONY: release
+release:
+	@( \
+		echo "Preparing release"; \
+		set -e; \
+		$(call activate_venv) \
+		cz bump --yes --changelog; \
+		echo "DONE: Preparing release"; \
+	)
+
+# Print the current project version.
+.PHONY: print-version
+print-version:
+	@( \
+		$(call activate_venv) \
+		cz version --project; \
+	)
+
 # Publish the package to the Test PyPI repository.
 # This target builds the package, activates the virtual environment (if not skipped),
 # and uses Poetry to publish the package to the Test PyPI repository.

@@ -92,20 +92,15 @@ Tox is used to test the project across multiple Python versions.
 
 ## Preparing a Release
 
-1. Update the version in `CHANGELOG.md` and `pyproject.toml`.
-2. Commit the changes:
+1. Prepare release commit and tag:
     ```bash
-    git commit -m "chore: bump project version to <major.minor.patch>"
+    make release
     ```
-3. Tag the commit:
-    ```bash
-    git tag <major.minor.patch>
-    ```
-4. Push the changes and tags:
+2. Push the changes and tags:
     ```bash
     git push origin --tags
     ```
-5. Merge the `development` branch into `master`:
+3. Merge the `development` branch into `master`:
     ```bash
     git checkout master
     git merge development
