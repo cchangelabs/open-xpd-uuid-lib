@@ -55,6 +55,13 @@ def generate(prefix: str | None = None) -> str:
 
     :raises ValueError: If the ``prefix`` starts with ``'Z'``.
     :raises GuidValidationError: If the ``prefix`` is not a valid short readable GUID.
+
+    .. note::
+        If you wish to issue your own openEPD IDs, you can request any three-symbol prefix that is not already
+        reserved. "EC3" is reserved for BuildingTransparency.org, "EST" is reserved for generic estimates,
+        "CQD" and "WAP" are reserved for WAP Sustainability, "PCR" is reserved for designating product category
+        rules, and "UL" is reserved for UL Sustainability. To request your own prefix, please email
+        open-epd-forum@c-change-labs.com.
     """
     randint_from = 0
     randint_to = TOTAL_COMBINATIONS
