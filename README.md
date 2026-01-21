@@ -18,7 +18,15 @@ Checksum allows to detect 1-character entry errors and character swaps, and most
 `pip install open-xpd-uuid-lib`
 
 # Supported versions
-The library supports `python 3.9` and higher.
+- The library is tested with the following Python versions:
+  - Python 3.9
+  - Python 3.10
+  - Python 3.11
+  - Python 3.12
+  - Python 3.13
+  - Python 3.14
+- The minimal supported Python version is 3.9.
+- Compatibility with future Python 3.x versions is expected but not guaranteed.
 
 # Usage
 ## Generate short readable GUID
@@ -33,6 +41,17 @@ The library supports `python 3.9` and higher.
 >>> open_xpd_uuid.generate('CQD')
 'CQD55PG0'
 ```
+
+If you wish to issue your own openEPD IDs, you can request any three-symbol prefix that is not already reserved.
+
+- "EC3" is reserved for BuildingTransparency.org
+- "EST" is reserved for generic estimates
+- "CQD" and "WAP" are reserved for WAP Sustainability
+- "PCR" is reserved for designating product category rules
+- "UL" is reserved for UL Sustainability
+
+To request your own prefix, please email open-epd-forum@c-change-labs.com.
+
 ## Sanitize short readable GUIDs
 Use `sanitize` to replace ambiguous chars(_0,o,O,1,L,l,I,i_) with correct ones and remove dashes(_-_).
 This function is useful to turn guid received from a user into a canonical one.
