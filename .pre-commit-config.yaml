@@ -11,7 +11,7 @@ repos:
         name: Check that merge conflicts are not being committed
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.11.11
+    rev: v0.11.13
     hooks:
       # Run the import sorting.
       - id: ruff
