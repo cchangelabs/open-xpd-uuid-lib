@@ -80,8 +80,8 @@ Tox is used to test the project across multiple Python versions.
     ```
 2. **Make Python Versions Available**:
     ```bash
-    pyenv install 3.9 3.10 3.11 3.12 3.13
-    pyenv local 3.9 3.10 3.11 3.12 3.13
+    pyenv install 3.9 3.10 3.11 3.12 3.13 3.14
+    pyenv local 3.9 3.10 3.11 3.12 3.13 3.14
     ```
 3. **Run Tox**:
     ```bash

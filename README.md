@@ -24,6 +24,7 @@ Checksum allows to detect 1-character entry errors and character swaps, and most
   - Python 3.11
   - Python 3.12
   - Python 3.13
+  - Python 3.14
 - The minimal supported Python version is 3.9.
 - Compatibility with future Python 3.x versions is expected but not guaranteed.
 
