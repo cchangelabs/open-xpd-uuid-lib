@@ -1,6 +1,6 @@
 [project]
 name = "open-xpd-uuid"
-version = "1.0.0"
+version = "1.1.0"
 license = "Apache-2.0"
 description = "A library for creating and managing globally-unique open-xpd-uuid namespaces for product declarations."
 authors = [{ name = "C-Change Labs", email = "support@c-change-labs.com" }]
