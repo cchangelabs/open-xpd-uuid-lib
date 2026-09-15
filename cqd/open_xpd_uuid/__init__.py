@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 import re
-from typing import overload
+from typing import Literal, overload
 
 DICTIONARY = "0123456789ABCDEFGHJKMNPQRSTUWXYZ"
 DICTIONARY_SIZE = len(DICTIONARY)
@@ -172,6 +172,52 @@ def remove_checksum(guid: str | None) -> str | None:
     if guid is None:
         return None
     return guid[:CODE_LENGTH]
+
+
+@overload
+def canonical_without_checksum(guid: str, *, none_on_error: Literal[False] = False) -> str: ...
+
+
+@overload
+def canonical_without_checksum(guid: None, *, none_on_error: Literal[False] = False) -> None: ...
+
+
+@overload
+def canonical_without_checksum(guid: str | None, *, none_on_error: Literal[True]) -> str | None: ...
+
+
+def canonical_without_checksum(guid: str | None, *, none_on_error: bool = False) -> str | None:
+    """Return canonical 8-character UUID without checksum from any accepted UUID form.
+
+    This is a convenience helper that combines ``sanitize``, ``validate``, and
+    ``remove_checksum`` in one call:
+    1. sanitizes accepted UUID input (removes dashes, normalizes ambiguous chars),
+    2. validates canonical UUID (including checksum if present),
+    3. removes checksum and returns the base 8-character UUID.
+
+    Example:
+        ``canonical_without_checksum("as-b2-lm-oL")`` returns ``"ASB21M01"``.
+        ``canonical_without_checksum("EC3949XK04")`` returns ``"EC3949XK"``.
+        ``canonical_without_checksum("invalid", none_on_error=True)`` returns ``None``.
+        ``canonical_without_checksum(None)`` returns ``None``.
+
+    :param guid: Open xPD UUID in any accepted form, or ``None``.
+    :param none_on_error: If ``True``, return ``None`` for invalid UUID input
+                          instead of raising validation errors.
+    :return: 8-character canonical UUID without checksum, or ``None`` if input is ``None``.
+    :raises ValueError: If ``guid`` is empty after sanitization.
+    :raises GuidValidationError: If ``guid`` has invalid length, characters, or checksum.
+    """
+    if guid is None:
+        return None
+    try:
+        canonical_guid = sanitize(guid)
+        validate(canonical_guid)
+        return remove_checksum(canonical_guid)
+    except (GuidValidationError, ValueError):
+        if none_on_error:
+            return None
+        raise
 
 
 def sanitize(guid: str) -> str:
