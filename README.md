@@ -97,6 +97,39 @@ Use `validate` to validate short readable GUID and get error description if the 
 `guid` length must be 8 characters long
 ```
 
+## Match open xPD UUIDs with regex
+
+Use the provided regex constants to recognize UUIDs in either accepted input form or canonical form.
+The patterns are not anchored, so you can choose full validation (`fullmatch`) or extraction (`finditer`).
+When extracting with `search`/`finditer`, apply token-boundary post-filtering (adjacent characters must not be
+alphanumeric or `-`) to avoid partial matches inside longer tokens.
+Even when using regex, prefer `open_xpd_uuid.validate` for actual GUID validation (including checksum validation for
+10-character GUIDs).
+
+```pycon
+>>> import re
+...
+... from cqd import open_xpd_uuid
+...
+... re.fullmatch(open_xpd_uuid.OPEN_XPD_UUID_REGEX, "-AB-11-cc-Ll---") is not None
+True
+>>> open_xpd_uuid.CANONICAL_OPEN_XPD_UUID_PATTERN.fullmatch("AB11CC11") is not None
+True
+>>> open_xpd_uuid.CANONICAL_OPEN_XPD_UUID_PATTERN.fullmatch("-AB-11-cc-Ll---") is not None
+False
+>>> text = "IDs: 123ABCED and -AB-11-cc-Ll---"
+>>> token_chars = set("-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+>>> matches = []
+>>> for match in open_xpd_uuid.OPEN_XPD_UUID_PATTERN.finditer(text):
+...     start, end = match.span()
+...     previous_char = text[start - 1] if start > 0 else ""
+...     next_char = text[end] if end < len(text) else ""
+...     if previous_char not in token_chars and next_char not in token_chars:
+...         matches.append(match.group(0))
+>>> matches
+['123ABCED', '-AB-11-cc-Ll---']
+```
+
 ## Generate and use checksum
 
 ```pycon
