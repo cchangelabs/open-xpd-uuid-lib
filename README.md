@@ -160,3 +160,21 @@ It accepts UUIDs with or without checksum, case-insensitively, preserves input c
 >>> open_xpd_uuid.remove_checksum(None) is None
 True
 ```
+
+## Convert any open xPD UUID to canonical UUID without checksum
+
+Use `canonical_without_checksum` to combine `sanitize`, `validate`, and `remove_checksum` in one call.
+It accepts any open xPD UUID form (dashes, lowercase, ambiguous characters) or `None`.
+Set `none_on_error=True` to return `None` for invalid UUIDs instead of raising an error.
+
+```pycon
+>>> from cqd import open_xpd_uuid
+>>> open_xpd_uuid.canonical_without_checksum("as-b2-lm-oL")
+'ASB21M01'
+>>> open_xpd_uuid.canonical_without_checksum("EC3949XK04")
+'EC3949XK'
+>>> open_xpd_uuid.canonical_without_checksum("invalid", none_on_error=True) is None
+True
+>>> open_xpd_uuid.canonical_without_checksum(None) is None
+True
+```
