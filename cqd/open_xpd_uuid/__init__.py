@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import random
 import re
+from typing import overload
 
 DICTIONARY = "0123456789ABCDEFGHJKMNPQRSTUWXYZ"
 DICTIONARY_SIZE = len(DICTIONARY)
@@ -142,6 +143,35 @@ def checksum(guid: str) -> str:
         result += decode(guid[start:stop])
 
     return encode(result % 1024).rjust(CHECKSUM_LENGTH, "0")
+
+
+@overload
+def remove_checksum(guid: str) -> str: ...
+
+
+@overload
+def remove_checksum(guid: None) -> None: ...
+
+
+def remove_checksum(guid: str | None) -> str | None:
+    """Remove checksum from a canonical open xPD UUID.
+
+    Accepts canonical UUIDs with or without checksum (8 or 10 chars), case-insensitively.
+    Preserves the original casing of the passed UUID.
+    The function assumes the input UUID is already valid and does not perform validation.
+
+    Example:
+        ``remove_checksum("EC3949XK04")`` returns ``"EC3949XK"``.
+        ``remove_checksum("ec3949xk04")`` returns ``"ec3949xk"``.
+        ``remove_checksum("EC3949XK")`` returns ``"EC3949XK"``.
+        ``remove_checksum(None)`` returns ``None``.
+
+    :param guid: Canonical open xPD UUID with or without checksum, or ``None``.
+    :return: 8-character canonical UUID without checksum, or ``None`` if input is ``None``.
+    """
+    if guid is None:
+        return None
+    return guid[:CODE_LENGTH]
 
 
 def sanitize(guid: str) -> str:

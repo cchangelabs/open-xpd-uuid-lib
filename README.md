@@ -143,3 +143,20 @@ False
 >>> short_link = "cqd.io/e/" + guid_with_checksum
 'cqd.io/e/JKGEE5PNME'
 ```
+
+## Remove checksum from canonical GUID
+
+Use `remove_checksum` when you need the base 8-character canonical UUID.
+It accepts UUIDs with or without checksum, case-insensitively, preserves input casing, and also accepts `None`.
+
+```pycon
+>>> from cqd import open_xpd_uuid
+>>> open_xpd_uuid.remove_checksum("EC3949XK04")
+'EC3949XK'
+>>> open_xpd_uuid.remove_checksum("ec3949xk04")
+'ec3949xk'
+>>> open_xpd_uuid.remove_checksum("EC3949XK")
+'EC3949XK'
+>>> open_xpd_uuid.remove_checksum(None) is None
+True
+```
