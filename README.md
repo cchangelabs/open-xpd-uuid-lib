@@ -38,7 +38,7 @@ Checksum allows to detect 1-character entry errors and character swaps, and most
 ## Generate short readable GUID starting with specific characters set (prefix)
 ```pycon
 >>> from cqd import open_xpd_uuid
->>> open_xpd_uuid.generate('CQD')
+>>> open_xpd_uuid.generate("CQD")
 'CQD55PG0'
 ```
 
@@ -59,7 +59,7 @@ This function is useful to turn guid received from a user into a canonical one.
 For example: `as-b2-lm-oL` -> `ASB21M01`
 ```pycon
 >>> from cqd import open_xpd_uuid
->>> open_xpd_uuid.sanitize('as-b2-lm-oL')
+>>> open_xpd_uuid.sanitize("as-b2-lm-oL")
 'ASB21M01'
 ```
 ## Validate short readable GUID
@@ -67,17 +67,16 @@ Use `validate` to validate short readable GUID and get error description if the 
 `validate` __accepts only__ "canonical" GUIDs: use `sanitize` function to make them "canonical".
 ```pycon
 >>> from cqd import open_xpd_uuid
->>> sanitized_guid = open_xpd_uuid.sanitize('as-b2-lm-oL')
+>>> sanitized_guid = open_xpd_uuid.sanitize("as-b2-lm-oL")
 >>> sanitized_guid
 'ASB21M01'
 >>> open_xpd_uuid.validate(sanitized_guid)
 # no exception - the `sanitized_guid` is valid
 
 >>> try:
-...     open_xpd_uuid.validate('as-b2-lm-oL')
+...     open_xpd_uuid.validate("as-b2-lm-oL")
 ... except open_xpd_uuid.GuidValidationError as e:
 ...     print(e)
-...     
 `guid` length must be 8 characters long
 ```
 
@@ -90,6 +89,6 @@ Use `validate` to validate short readable GUID and get error description if the 
 'ME'
 >>> guid_with_checksum = guid + checksum
 'JKGEE5PNME'
->>> short_link = 'cqd.io/e/' + guid_with_checksum
+>>> short_link = "cqd.io/e/" + guid_with_checksum
 'cqd.io/e/JKGEE5PNME'
 ```
