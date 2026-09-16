@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import random
+import re
+from typing import Literal, overload
 
 DICTIONARY = "0123456789ABCDEFGHJKMNPQRSTUWXYZ"
 DICTIONARY_SIZE = len(DICTIONARY)
@@ -9,6 +11,41 @@ CODE_LENGTH = 8
 TOTAL_COMBINATIONS = (DICTIONARY_SIZE - 1) * DICTIONARY_SIZE ** (CODE_LENGTH - 1)
 
 CHECKSUM_LENGTH = 2
+
+OPEN_XPD_UUID_REGEX = r"(?:-*[A-Za-z0-9]){8}(?:(?:-*[A-Za-z0-9]){2})?-*"
+"""Regex string that matches open xPD UUIDs in any accepted input form.
+
+Matches values with exactly 8 or 10 alphanumeric characters and any number
+of dashes. This includes lowercase and ambiguous letters that can be
+normalized via `sanitize`.
+
+The pattern is intentionally not anchored so users can decide whether to use
+`re.fullmatch`, `re.search`, or `re.finditer`.
+
+When using `re.search` or `re.finditer` for text extraction, callers must apply
+token-boundary post-filtering (characters adjacent to a match must not be
+alphanumeric or `-`) to avoid partial matches from longer tokens.
+"""
+
+OPEN_XPD_UUID_PATTERN = re.compile(OPEN_XPD_UUID_REGEX)
+"""Compiled regex pattern that matches open xPD UUIDs in any accepted input form."""
+
+CANONICAL_OPEN_XPD_UUID_REGEX = r"[0-9A-HJKMNPQRSTUWXYZ]{8}(?:[0-9A-HJKMNPQRSTUWXYZ]{2})?"
+"""Regex string that matches canonical open xPD UUIDs.
+
+Matches uppercase UUIDs with exactly 8 or 10 characters from the canonical
+dictionary (`DICTIONARY`) and no dashes.
+
+The pattern is intentionally not anchored so users can decide whether to use
+`re.fullmatch`, `re.search`, or `re.finditer`.
+
+When using `re.search` or `re.finditer` for text extraction, callers must apply
+token-boundary post-filtering (characters adjacent to a match must not be
+alphanumeric or `-`) to avoid partial matches from longer tokens.
+"""
+
+CANONICAL_OPEN_XPD_UUID_PATTERN = re.compile(CANONICAL_OPEN_XPD_UUID_REGEX)
+"""Compiled regex pattern that matches canonical open xPD UUIDs."""
 
 
 class GuidValidationError(Exception):
@@ -106,6 +143,81 @@ def checksum(guid: str) -> str:
         result += decode(guid[start:stop])
 
     return encode(result % 1024).rjust(CHECKSUM_LENGTH, "0")
+
+
+@overload
+def remove_checksum(guid: str) -> str: ...
+
+
+@overload
+def remove_checksum(guid: None) -> None: ...
+
+
+def remove_checksum(guid: str | None) -> str | None:
+    """Remove checksum from a canonical open xPD UUID.
+
+    Accepts canonical UUIDs with or without checksum (8 or 10 chars), case-insensitively.
+    Preserves the original casing of the passed UUID.
+    The function assumes the input UUID is already valid and does not perform validation.
+
+    Example:
+        ``remove_checksum("EC3949XK04")`` returns ``"EC3949XK"``.
+        ``remove_checksum("ec3949xk04")`` returns ``"ec3949xk"``.
+        ``remove_checksum("EC3949XK")`` returns ``"EC3949XK"``.
+        ``remove_checksum(None)`` returns ``None``.
+
+    :param guid: Canonical open xPD UUID with or without checksum, or ``None``.
+    :return: 8-character canonical UUID without checksum, or ``None`` if input is ``None``.
+    """
+    if guid is None:
+        return None
+    return guid[:CODE_LENGTH]
+
+
+@overload
+def canonical_without_checksum(guid: str, *, none_on_error: Literal[False] = False) -> str: ...
+
+
+@overload
+def canonical_without_checksum(guid: None, *, none_on_error: Literal[False] = False) -> None: ...
+
+
+@overload
+def canonical_without_checksum(guid: str | None, *, none_on_error: Literal[True]) -> str | None: ...
+
+
+def canonical_without_checksum(guid: str | None, *, none_on_error: bool = False) -> str | None:
+    """Return canonical 8-character UUID without checksum from any accepted UUID form.
+
+    This is a convenience helper that combines ``sanitize``, ``validate``, and
+    ``remove_checksum`` in one call:
+    1. sanitizes accepted UUID input (removes dashes, normalizes ambiguous chars),
+    2. validates canonical UUID (including checksum if present),
+    3. removes checksum and returns the base 8-character UUID.
+
+    Example:
+        ``canonical_without_checksum("as-b2-lm-oL")`` returns ``"ASB21M01"``.
+        ``canonical_without_checksum("EC3949XK04")`` returns ``"EC3949XK"``.
+        ``canonical_without_checksum("invalid", none_on_error=True)`` returns ``None``.
+        ``canonical_without_checksum(None)`` returns ``None``.
+
+    :param guid: Open xPD UUID in any accepted form, or ``None``.
+    :param none_on_error: If ``True``, return ``None`` for invalid UUID input
+                          instead of raising validation errors.
+    :return: 8-character canonical UUID without checksum, or ``None`` if input is ``None``.
+    :raises ValueError: If ``guid`` is empty after sanitization.
+    :raises GuidValidationError: If ``guid`` has invalid length, characters, or checksum.
+    """
+    if guid is None:
+        return None
+    try:
+        canonical_guid = sanitize(guid)
+        validate(canonical_guid)
+        return remove_checksum(canonical_guid)
+    except (GuidValidationError, ValueError):
+        if none_on_error:
+            return None
+        raise
 
 
 def sanitize(guid: str) -> str:

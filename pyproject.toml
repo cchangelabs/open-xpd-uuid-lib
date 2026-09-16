@@ -1,6 +1,6 @@
 [project]
 name = "open-xpd-uuid"
-version = "1.1.0"
+version = "1.2.0"
 license = "Apache-2.0"
 description = "A library for creating and managing globally-unique open-xpd-uuid namespaces for product declarations."
 authors = [{ name = "C-Change Labs", email = "support@c-change-labs.com" }]
@@ -32,11 +32,11 @@ packages = [
 ]
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.5"
-ruff = "^0.11.11"
-mypy = "^1.15.0"
-pre-commit = "^4.2.0"
-commitizen = ">=4.8.2,<5.0.0"
+pytest = ">=8.4.2,<9" # pytest v9 is not compatible with Python 3.9
+ruff = ">=0.16.7"
+mypy = ">=1.19.1,<2" # mypy v2 is not compatible with Python 3.9
+pre-commit = ">=4.3.0,<4.4.0" # pre-commit v4.4 is not compatible with Python 3.9
+commitizen = ">=4.10.1,<4.11.0" # commitizen v4.11 is not compatible with Python 3.9
 
 [tool.ruff]
 line-length = 120

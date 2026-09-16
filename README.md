@@ -1,44 +1,56 @@
 # open-xpd-uuid-lib
-A library of common functions used when creating and managing open-xpd-uuid, 
-a common, globally-unique name space (uuid) for Product Declarations, including HPDs and EPDs, 
+
+A library of common functions used when creating and managing open-xpd-uuid,
+a common, globally-unique name space (uuid) for Product Declarations, including HPDs and EPDs,
 to help users find all environmental and health information related to a single product.
+
 # Open xPD UUID (short readable GUIDs)
-`open-xpd-uuid` is a string that consists of 8 or 10 (8+2) alpha-numeric characters and any number of dashes. 
+
+`open-xpd-uuid` is a string that consists of 8 or 10 (8+2) alpha-numeric characters and any number of dashes.
 For example: `123ABCED`, `123ABCEDAR`, `ASB21M01`, `avbDK93S`, `-AB-11-cc-Ll---`.
-GUIDs that consists of the following characters `1234567890ABCDEFGHJKMNPRQRSTUVWXYZ` (`L` and `O` are not mentioned) 
+GUIDs that consists of the following characters `1234567890ABCDEFGHJKMNPQRSTUWXYZ` (`I`, `L`, `O`, and `V` are not
+mentioned)
 are called "canonical". For example: `12345678`, `ABCDEFG1`, `123ABCEDAR`.
 GUIDs that consists of 10 characters represent 8-character guid with appended 2-character checksum.
 Checksum allows to detect 1-character entry errors and character swaps, and most other errors.
+
 ## Character treatment
+
 * `-` or dash - is ignored
 * `L` or `l` or `I` or `i` - is treated as `1`
 * `O` or `o` - is treated as `0`(zero)
- 
+
 # Install
+
 `pip install open-xpd-uuid-lib`
 
 # Supported versions
+
 - The library is tested with the following Python versions:
-  - Python 3.9
-  - Python 3.10
-  - Python 3.11
-  - Python 3.12
-  - Python 3.13
-  - Python 3.14
+    - Python 3.9
+    - Python 3.10
+    - Python 3.11
+    - Python 3.12
+    - Python 3.13
+    - Python 3.14
 - The minimal supported Python version is 3.9.
 - Compatibility with future Python 3.x versions is expected but not guaranteed.
 
 # Usage
+
 ## Generate short readable GUID
+
 ```pycon
 >>> from cqd import open_xpd_uuid
 >>> open_xpd_uuid.generate()
 'JKGEE5PN'
 ```
+
 ## Generate short readable GUID starting with specific characters set (prefix)
+
 ```pycon
 >>> from cqd import open_xpd_uuid
->>> open_xpd_uuid.generate('CQD')
+>>> open_xpd_uuid.generate("CQD")
 'CQD55PG0'
 ```
 
@@ -53,35 +65,73 @@ If you wish to issue your own openEPD IDs, you can request any three-symbol pref
 To request your own prefix, please email open-epd-forum@c-change-labs.com.
 
 ## Sanitize short readable GUIDs
-Use `sanitize` to replace ambiguous chars(_0,o,O,1,L,l,I,i_) with correct ones and remove dashes(_-_).
+
+Use `sanitize` to replace ambiguous chars (_0,o,O,1,L,l,I,i_) with correct ones and remove dashes (_-_).
 This function is useful to turn guid received from a user into a canonical one.
 
 For example: `as-b2-lm-oL` -> `ASB21M01`
+
 ```pycon
 >>> from cqd import open_xpd_uuid
->>> open_xpd_uuid.sanitize('as-b2-lm-oL')
+>>> open_xpd_uuid.sanitize("as-b2-lm-oL")
 'ASB21M01'
 ```
+
 ## Validate short readable GUID
+
 Use `validate` to validate short readable GUID and get error description if the GUID is not valid.
 `validate` __accepts only__ "canonical" GUIDs: use `sanitize` function to make them "canonical".
+
 ```pycon
 >>> from cqd import open_xpd_uuid
->>> sanitized_guid = open_xpd_uuid.sanitize('as-b2-lm-oL')
+>>> sanitized_guid = open_xpd_uuid.sanitize("as-b2-lm-oL")
 >>> sanitized_guid
 'ASB21M01'
 >>> open_xpd_uuid.validate(sanitized_guid)
 # no exception - the `sanitized_guid` is valid
 
 >>> try:
-...     open_xpd_uuid.validate('as-b2-lm-oL')
+...     open_xpd_uuid.validate("as-b2-lm-oL")
 ... except open_xpd_uuid.GuidValidationError as e:
 ...     print(e)
-...     
 `guid` length must be 8 characters long
 ```
 
+## Match open xPD UUIDs with regex
+
+Use the provided regex constants to recognize UUIDs in either accepted input form or canonical form.
+The patterns are not anchored, so you can choose full validation (`fullmatch`) or extraction (`finditer`).
+When extracting with `search`/`finditer`, apply token-boundary post-filtering (adjacent characters must not be
+alphanumeric or `-`) to avoid partial matches inside longer tokens.
+Even when using regex, prefer `open_xpd_uuid.validate` for actual GUID validation (including checksum validation for
+10-character GUIDs).
+
+```pycon
+>>> import re
+...
+... from cqd import open_xpd_uuid
+...
+... re.fullmatch(open_xpd_uuid.OPEN_XPD_UUID_REGEX, "-AB-11-cc-Ll---") is not None
+True
+>>> open_xpd_uuid.CANONICAL_OPEN_XPD_UUID_PATTERN.fullmatch("AB11CC11") is not None
+True
+>>> open_xpd_uuid.CANONICAL_OPEN_XPD_UUID_PATTERN.fullmatch("-AB-11-cc-Ll---") is not None
+False
+>>> text = "IDs: 123ABCED and -AB-11-cc-Ll---"
+>>> token_chars = set("-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+>>> matches = []
+>>> for match in open_xpd_uuid.OPEN_XPD_UUID_PATTERN.finditer(text):
+...     start, end = match.span()
+...     previous_char = text[start - 1] if start > 0 else ""
+...     next_char = text[end] if end < len(text) else ""
+...     if previous_char not in token_chars and next_char not in token_chars:
+...         matches.append(match.group(0))
+>>> matches
+['123ABCED', '-AB-11-cc-Ll---']
+```
+
 ## Generate and use checksum
+
 ```pycon
 >>> from cqd import open_xpd_uuid
 >>> guid = open_xpd_uuid.generate()
@@ -90,6 +140,41 @@ Use `validate` to validate short readable GUID and get error description if the 
 'ME'
 >>> guid_with_checksum = guid + checksum
 'JKGEE5PNME'
->>> short_link = 'cqd.io/e/' + guid_with_checksum
+>>> short_link = "cqd.io/e/" + guid_with_checksum
 'cqd.io/e/JKGEE5PNME'
+```
+
+## Remove checksum from canonical GUID
+
+Use `remove_checksum` when you need the base 8-character canonical UUID.
+It accepts UUIDs with or without checksum, case-insensitively, preserves input casing, and also accepts `None`.
+
+```pycon
+>>> from cqd import open_xpd_uuid
+>>> open_xpd_uuid.remove_checksum("EC3949XK04")
+'EC3949XK'
+>>> open_xpd_uuid.remove_checksum("ec3949xk04")
+'ec3949xk'
+>>> open_xpd_uuid.remove_checksum("EC3949XK")
+'EC3949XK'
+>>> open_xpd_uuid.remove_checksum(None) is None
+True
+```
+
+## Convert any open xPD UUID to canonical UUID without checksum
+
+Use `canonical_without_checksum` to combine `sanitize`, `validate`, and `remove_checksum` in one call.
+It accepts any open xPD UUID form (dashes, lowercase, ambiguous characters) or `None`.
+Set `none_on_error=True` to return `None` for invalid UUIDs instead of raising an error.
+
+```pycon
+>>> from cqd import open_xpd_uuid
+>>> open_xpd_uuid.canonical_without_checksum("as-b2-lm-oL")
+'ASB21M01'
+>>> open_xpd_uuid.canonical_without_checksum("EC3949XK04")
+'EC3949XK'
+>>> open_xpd_uuid.canonical_without_checksum("invalid", none_on_error=True) is None
+True
+>>> open_xpd_uuid.canonical_without_checksum(None) is None
+True
 ```
