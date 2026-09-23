@@ -14,7 +14,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -22,7 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 readme = "README.md"
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.10,<4.0"
 dependencies = [
 ]
 
@@ -32,11 +31,11 @@ packages = [
 ]
 
 [tool.poetry.group.dev.dependencies]
-pytest = ">=8.4.2,<9" # pytest v9 is not compatible with Python 3.9
-ruff = ">=0.16.7"
-mypy = ">=1.19.1,<2" # mypy v2 is not compatible with Python 3.9
-pre-commit = ">=4.3.0,<4.4.0" # pre-commit v4.4 is not compatible with Python 3.9
-commitizen = ">=4.10.1,<4.11.0" # commitizen v4.11 is not compatible with Python 3.9
+pytest = ">=9.1.1,<10.0.0"
+ruff = ">=0.16.7,<1.0.0"
+mypy = ">=2.3.1,<3.0.0"
+pre-commit = ">=4.6.2,<5.0.0"
+commitizen = ">=4.19.0,<5.0.0"
 
 [tool.ruff]
 line-length = 120
@@ -62,7 +61,7 @@ ignore = [
 convention = "pep257"
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 strict = true
 
 [tool.commitizen]

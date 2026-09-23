@@ -38,11 +38,11 @@ This guide will help you set up your development environment, run tests, and con
    - [pyenv](https://github.com/pyenv/pyenv#installation) for managing Python versions.
    - [GNU Make](https://www.gnu.org/software/make/#download) (usually pre-installed on most systems).
    - [Poetry 2.x](https://python-poetry.org/docs/#installation) for dependency management.
-3. **Install Python 3.9**:
+3. **Install Python 3.10**:
     ```bash
-    pyenv install 3.9
+    pyenv install 3.10
     ```
-   If Python 3.9 is not available, update pyenv:
+   If Python 3.10 is not available, update pyenv:
     ```bash
     pyenv update
     ```
@@ -80,8 +80,8 @@ Tox is used to test the project across multiple Python versions.
     ```
 2. **Make Python Versions Available**:
     ```bash
-    pyenv install 3.9 3.10 3.11 3.12 3.13 3.14
-    pyenv local 3.9 3.10 3.11 3.12 3.13 3.14
+    pyenv install 3.10 3.11 3.12 3.13 3.14
+    pyenv local 3.10 3.11 3.12 3.13 3.14
     ```
 3. **Run Tox**:
     ```bash

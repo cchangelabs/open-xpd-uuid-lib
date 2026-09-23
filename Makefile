@@ -1,7 +1,7 @@
 VIRTUAL_ENV_PATH=venv
 SKIP_VENV="${NO_VENV}"
 SHELL := /bin/bash
-PYTHON := python3.9
+PYTHON := python3.10
 
 POETRY ?= poetry
 POETRY_GROUPS := dev
