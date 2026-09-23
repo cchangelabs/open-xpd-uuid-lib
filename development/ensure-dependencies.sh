@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEPS=("python3.9" "poetry")
+DEPS=("python3.10" "poetry")
 
 COLOR_RED='\033[0;31m'
 COLOR_YELLOW='\033[1;33m'
